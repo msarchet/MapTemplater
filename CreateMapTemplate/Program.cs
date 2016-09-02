@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
 namespace CreateMapTemplate
@@ -9,47 +10,71 @@ namespace CreateMapTemplate
     {
         static void Main(string[] args)
         {
-            var size = 24;
-            var resolution = 600;
-            var padding = 1;
-            var pixels = (size + padding * 2) * resolution;
-            var lineWidth = 5;
-            using (var bitmap = new Bitmap(pixels, pixels))
+            var parsed = ApplicationArguments.ParseArgs(args);
+            if (parsed.Parsed)
             {
-                bitmap.SetResolution(resolution, resolution);
+                DrawMap(parsed);
+            }
+        }
+
+        private static void DrawMap(ApplicationArguments parsed)
+        {
+            var widthPixels = (parsed.Width + parsed.Padding * 2) * parsed.DPI;
+            var heightPixels = (parsed.Height + parsed.Padding * 2) * parsed.DPI;
+            var lineWidth = parsed.GridLineWidth;
+
+            using (var bitmap = new Bitmap(widthPixels, heightPixels))
+            {
+                bitmap.SetResolution(parsed.DPI, parsed.DPI);
                 var graphics = Graphics.FromImage(bitmap);
                 Pen blackPen = new Pen(Color.Black, lineWidth);
 
                 graphics.Clear(Color.White);
                 Pen borderPen = new Pen(Color.Black, 10);
-                var borderWidth = padding * resolution;
-                var width = size * resolution;
-                var height = size * resolution;
-                DrawInchLinesInRectangle(graphics, blackPen, borderWidth, borderWidth, width, height, resolution);
-                graphics.DrawRectangle(borderPen, new Rectangle(borderWidth, borderWidth, width, height));
-                bitmap.Save("./output.png", ImageFormat.Png);
-            }
+                var borderWidth = parsed.Padding * parsed.DPI;
+                var width = parsed.Width * parsed.DPI;
+                var height = parsed.Height * parsed.DPI;
 
+                var boundingRectangle = new Rectangle(new Point(borderWidth, borderWidth), new Size(width, height));
+
+                DrawInchLinesInRectangle(graphics, blackPen, boundingRectangle, parsed.DPI);
+
+                if (parsed.Elliptical)
+                {
+                    var path1 = new GraphicsPath();
+                    var path2 = new GraphicsPath();
+
+                    path1.AddRectangle(boundingRectangle);
+                    path2.AddArc(boundingRectangle, 0, 360);
+
+                    var region = new Region(path1);
+                    region.Exclude(path2);
+
+                    graphics.FillRegion(new SolidBrush(Color.White), region);
+                    graphics.DrawArc(blackPen, boundingRectangle, 0, 360);
+                }
+                else
+                {
+                    graphics.DrawRectangle(borderPen, boundingRectangle);
+                }
+
+                var fontFamily = new FontFamily("Arial");
+                var f = new Font(fontFamily, 200, FontStyle.Regular, GraphicsUnit.Pixel);
+                graphics.DrawString(parsed.MapName, f, new SolidBrush(Color.Black), new Point(borderWidth, 150));
+                bitmap.Save($"./{parsed.FileName}.png", ImageFormat.Png);
+            }
         }
 
-        private static void DrawInchLinesInRectangle(Graphics graphics, Pen pen, int x, int y, int width, int height, int pixelsPerInch)
+        private static void DrawInchLinesInRectangle(Graphics graphics, Pen pen, Rectangle boundingRectangle, int pixelsPerInch)
         {
-            // draw vertical lines
-            for(var currentX = x; currentX <= x + width; currentX += pixelsPerInch)
+            for (var currentX = boundingRectangle.Left + pixelsPerInch ; currentX < boundingRectangle.Right; currentX += pixelsPerInch)
             {
-                var drawnX = currentX;
-                var startY = y;
-                var endY = y + height;
-
-                graphics.DrawLine(pen, drawnX , startY, drawnX, endY);
+                graphics.DrawLine(pen, currentX, boundingRectangle.Top, currentX, boundingRectangle.Bottom);
             }
 
-            for(var currentY = y; currentY <= y + height; currentY += pixelsPerInch)
+            for (var currentY = boundingRectangle.Top + pixelsPerInch; currentY < boundingRectangle.Bottom; currentY += pixelsPerInch)
             {
-                var drawnY = currentY;
-                var startX = x;
-                var endX = x + width;
-                graphics.DrawLine(pen, startX,  drawnY, endX, drawnY);
+                graphics.DrawLine(pen, boundingRectangle.Left, currentY, boundingRectangle.Right, currentY);
             }
         }
 
