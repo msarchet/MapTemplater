@@ -5,6 +5,10 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateMapTemplate", "CreateMapTemplate\CreateMapTemplate.csproj", "{99D8FAD5-A278-4667-9CE1-B4D49D85928C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GridBuilder", "GridBuilder\GridBuilder.csproj", "{6721FD3F-BA25-4E84-9988-16CE8D5F0088}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpBuilder", "HttpBuilder\HttpBuilder.csproj", "{05B40494-8F76-437C-BE9D-6A5017B25112}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{99D8FAD5-A278-4667-9CE1-B4D49D85928C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99D8FAD5-A278-4667-9CE1-B4D49D85928C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99D8FAD5-A278-4667-9CE1-B4D49D85928C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6721FD3F-BA25-4E84-9988-16CE8D5F0088}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6721FD3F-BA25-4E84-9988-16CE8D5F0088}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6721FD3F-BA25-4E84-9988-16CE8D5F0088}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6721FD3F-BA25-4E84-9988-16CE8D5F0088}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05B40494-8F76-437C-BE9D-6A5017B25112}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05B40494-8F76-437C-BE9D-6A5017B25112}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05B40494-8F76-437C-BE9D-6A5017B25112}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05B40494-8F76-437C-BE9D-6A5017B25112}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
